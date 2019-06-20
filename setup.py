@@ -25,7 +25,8 @@ def find_version(*file_paths):
 VERSION = find_version('npfile', '__init__.py')
 
 requirements = [
-    'numpy'
+    'numpy',
+    'dataclasses'
 ]
 
 setup(
