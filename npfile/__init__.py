@@ -27,6 +27,8 @@ class NpFile:
         self.np_name = os.path.join(name, 'data.dat')
         self.mata_name = os.path.join(name, 'meta.pkl')
 
+        self.fp = np.memmap(self.np_name)
+
     @property
     def dtype(self):
         return self.meta.dtype
@@ -34,3 +36,14 @@ class NpFile:
     @property
     def shape(self) -> Tuple[int, ...]:
         return self.meta.shape
+
+    def __enter__(self):
+        return self.fp
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # save meta data
+        if self.mode == 'w+':
+            with open(self.meta_name, 'wb') as f:
+                pickle.dump(self.meta, f)
+        # save to disk
+        del self.fp
