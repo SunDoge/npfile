@@ -1,4 +1,3 @@
-import torch
 import numpy as np
 from dataclasses import dataclass
 from typing import Tuple, Any
@@ -16,18 +15,27 @@ class MetaData:
 
 class NpFile:
 
-    def __init__(self, name: str, mode: str, dtype: Any, shape=None):
+    def __init__(self, name: str, mode: str, dtype=None, shape=None):
 
         self.name = name
         self.mode = mode
 
-        self.meta = MetaData(dtype, shape)
-
         os.makedirs(name, exist_ok=True)
         self.np_name = os.path.join(name, 'data.dat')
-        self.mata_name = os.path.join(name, 'meta.pkl')
+        self.meta_name = os.path.join(name, 'meta.pkl')
 
-        self.fp = np.memmap(self.np_name)
+        if self.mode == 'w+':
+            self.meta = MetaData(dtype, shape)
+        elif self.mode in ['r', 'r+', 'c']:
+            with open(self.mata_name, 'rb') as f:
+                self.meta = pickle.load(f)
+
+        self.fp = np.memmap(
+            self.np_name,
+            dtype=self.meta.dtype,
+            mode=mode,
+            shape=self.meta.shape
+        )
 
     @property
     def dtype(self):
