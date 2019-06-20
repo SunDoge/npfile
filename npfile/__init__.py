@@ -27,7 +27,7 @@ class NpFile:
         if self.mode == 'w+':
             self.meta = MetaData(dtype, shape)
         elif self.mode in ['r', 'r+', 'c']:
-            with open(self.mata_name, 'rb') as f:
+            with open(self.meta_name, 'rb') as f:
                 self.meta = pickle.load(f)
 
         self.fp = np.memmap(
