@@ -29,6 +29,8 @@ class NpFile:
         elif self.mode in ['r', 'r+', 'c']:
             with open(self.meta_name, 'rb') as f:
                 self.meta = pickle.load(f)
+        else:
+            raise Exception(f'no such mode: {mode}')
 
         self.fp = np.memmap(
             self.np_name,
@@ -45,7 +47,7 @@ class NpFile:
     def shape(self) -> Tuple[int, ...]:
         return self.meta.shape
 
-    def __enter__(self):
+    def __enter__(self) -> np.memmap:
         return self.fp
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -55,3 +57,12 @@ class NpFile:
                 pickle.dump(self.meta, f)
         # save to disk
         del self.fp
+
+
+class GroupFile:
+
+    def __init__(self):
+        pass
+
+    def __getitem__(self, item):
+        pass
